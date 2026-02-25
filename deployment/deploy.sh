@@ -71,7 +71,7 @@ echo -e "${GREEN}✓ Cloud Function deployed${NC}"
 echo ""
 
 # Get the function URL
-FUNCTION_URL=$(gcloud functions describe ai-study-buddy-generate --gen2 --region=us-central1 --format='value(serviceConfig.uri)')
+FUNCTION_URL=$(gcloud functions describe ai-study-help-generate --gen2 --region=us-central1 --format='value(serviceConfig.uri)')
 
 echo -e "${GREEN}Your Cloud Function URL: $FUNCTION_URL${NC}"
 echo ""
