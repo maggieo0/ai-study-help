@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# AI Study Buddy - GCP Deployment Script
+# AI Study Help - GCP Deployment Script
 # This script deploys the entire application to Google Cloud Platform
 
 set -e  # Exit on error
 
-echo "AI Study Buddy - Deployment Script"
+echo "AI Study Help - Deployment Script"
 echo "======================================"
 echo ""
 
@@ -79,7 +79,7 @@ echo ""
 # Create storage bucket for frontend
 echo -e "${YELLOW}Step 4: Creating Cloud Storage bucket for website...${NC}"
 
-BUCKET_NAME="${PROJECT_ID}-study-buddy"
+BUCKET_NAME="${PROJECT_ID}-study-help"
 
 # Check if bucket exists
 if gsutil ls -b gs://$BUCKET_NAME &> /dev/null; then
@@ -119,7 +119,7 @@ echo "======================================"
 echo -e "${GREEN} Deployment Complete!${NC}"
 echo "======================================"
 echo ""
-echo -e "${GREEN}Your AI Study Buddy is live at:${NC}"
+echo -e "${GREEN}Your AI Study Help is live at:${NC}"
 echo -e "${YELLOW}$WEBSITE_URL${NC}"
 echo ""
 echo "Next Steps:"
