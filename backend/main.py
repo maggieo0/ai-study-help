@@ -1,20 +1,20 @@
 import functions_framework
 from flask import jsonify
 import vertexai
-from vertexai.generative_models import GenerativeModel
+from vertexai.preview.generative_models import GenerativeModel
 import PyPDF2
 import io
 import json
 import os
 
 # Initialize Vertex AI
-PROJECT_ID = os.environ.get('GCP_PROJECT_ID', 'your-project-id')
+PROJECT_ID = 'ai-study-help'
 LOCATION = 'us-central1'
 
 vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 # Initialize Gemini model
-model = GenerativeModel('gemini-1.5-flash')
+model = GenerativeModel('gemini-1.5-flash-001')
 
 @functions_framework.http
 def generate(request):
