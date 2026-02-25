@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Study Buddy - Free Study Materials Generator</title>
+    <title>AI Study Help - Free Study Materials Generator</title>
     <style>
         * {
             margin: 0;
@@ -403,8 +403,8 @@
         let selectedMaterial = 'flashcards';
         let uploadedFile = null;
 
-        // REPLACE THIS WITH YOUR CLOUD FUNCTION URL AFTER DEPLOYMENT
-        const API_URL = 'YOUR_CLOUD_FUNCTION_URL_HERE';
+        
+        const API_URL = 'https://us-central1-ai-study-help.cloudfunctions.net/ai-study-help-generate';
 
         function switchTab(tab) {
             currentTab = tab;
