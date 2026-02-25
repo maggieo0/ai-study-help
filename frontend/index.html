@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Buddy - Free Study Materials Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .input-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-upload {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            background: #f8f9ff;
+            border-color: #764ba2;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .generate-section {
+            margin-top: 20px;
+        }
+
+        .material-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .material-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .material-btn.selected {
+            border-color: #667eea;
+            background: #f8f9ff;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .flashcard {
+            background: #f8f9ff;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .flashcard:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .flashcard .term {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .flashcard .definition {
+            color: #555;
+            display: none;
+        }
+
+        .flashcard.flipped .definition {
+            display: block;
+        }
+
+        .question {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question .q-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .option {
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            background: #f8f9ff;
+            border-color: #667eea;
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .option.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .new-materials-btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .new-materials-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .error.active {
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 AI Study Help</h1>
+            <p>Free flashcards and practice questions</p>
+        </div>
+
+        <div class="card">
+            <div class="input-section">
+                <h2>1. Add Your Study Material</h2>
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchTab('text')">📝 Paste Text</button>
+                    <button class="tab-btn" onclick="switchTab('pdf')">📄 Upload PDF</button>
+                </div>
+
+                <div id="text-tab" class="tab-content active">
+                    <textarea id="textInput" placeholder="Paste your lecture notes, textbook chapter, or study material here..."></textarea>
+                </div>
+
+                <div id="pdf-tab" class="tab-content">
+                    <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                        <div class="file-upload-icon">📎</div>
+                        <div><strong>Click to upload PDF</strong></div>
+                        <div style="margin-top: 10px; color: #666;">or drag and drop</div>
+                        <input type="file" id="fileInput" accept=".pdf" onchange="handleFileSelect(event)">
+                    </div>
+                    <div id="fileName" style="margin-top: 10px; color: #667eea; font-weight: 600;"></div>
+                </div>
+            </div>
+
+            <div class="generate-section">
+                <h2>2. Choose What to Generate</h2>
+                <div class="material-options">
+                    <div class="material-btn selected" id="flashcards-btn" onclick="selectMaterial('flashcards')">
+                        🗂️ Flashcards
+                    </div>
+                    <div class="material-btn" id="questions-btn" onclick="selectMaterial('questions')">
+                        ❓ Multiple Choice
+                    </div>
+                </div>
+
+                <button class="generate-btn" onclick="generateMaterials()">
+                    ✨ Generate Study Materials
+                </button>
+
+                <div class="error" id="errorMsg"></div>
+            </div>
+        </div>
+
+        <div class="card loading" id="loadingDiv">
+            <div class="spinner"></div>
+            <h3 style="color: #667eea;">Generating your study materials...</h3>
+            <p style="color: #666; margin-top: 10px;">This may take a few moments</p>
+        </div>
+
+        <div class="card results" id="resultsDiv">
+            <h2 id="resultsTitle">Your Study Materials</h2>
+            <div id="materialsContainer"></div>
+            <button class="new-materials-btn" onclick="resetApp()">Create New Materials</button>
+        </div>
+
+        <div class="footer">
+            <p>By Maggie Olanubi | Powered by Google Cloud & Gemini AI</p>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'text';
+        let selectedMaterial = 'flashcards';
+        let uploadedFile = null;
+
+        // REPLACE THIS WITH YOUR CLOUD FUNCTION URL AFTER DEPLOYMENT
+        const API_URL = 'YOUR_CLOUD_FUNCTION_URL_HERE';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tab === 'text') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('text-tab').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('pdf-tab').classList.add('active');
+            }
+        }
+
+        function selectMaterial(type) {
+            selectedMaterial = type;
+            document.querySelectorAll('.material-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById(`${type}-btn`).classList.add('selected');
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedFile = file;
+                document.getElementById('fileName').textContent = `Selected: ${file.name}`;
+            }
+        }
+
+        async function generateMaterials() {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.classList.remove('active');
+
+            let content = '';
+            
+            if (currentTab === 'text') {
+                content = document.getElementById('textInput').value.trim();
+                if (!content) {
+                    showError('Please paste some text to generate study materials');
+                    return;
+                }
+            } else {
+                if (!uploadedFile) {
+                    showError('Please upload a PDF file');
+                    return;
+                }
+            }
+
+            // Show loading
+            document.querySelector('.generate-btn').disabled = true;
+            document.getElementById('loadingDiv').classList.add('active');
+
+            try {
+                let response;
+                
+                if (currentTab === 'text') {
+                    // Send text directly
+                    response = await fetch(`${API_URL}/generate`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            text: content,
+                            materialType: selectedMaterial
+                        })
+                    });
+                } else {
+                    // Upload PDF and send
+                    const formData = new FormData();
+                    formData.append('file', uploadedFile);
+                    formData.append('materialType', selectedMaterial);
+                    
+                    response = await fetch(`${API_URL}/generate`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate materials');
+                }
+
+                const data = await response.json();
+                displayResults(data);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Something went wrong. Please try again.');
+            } finally {
+                document.querySelector('.generate-btn').disabled = false;
+                document.getElementById('loadingDiv').classList.remove('active');
+            }
+        }
+
+        function displayResults(data) {
+            const container = document.getElementById('materialsContainer');
+            container.innerHTML = '';
+
+            if (selectedMaterial === 'flashcards') {
+                document.getElementById('resultsTitle').textContent = '🗂️ Your Flashcards (Click to flip)';
+                data.materials.forEach((card, index) => {
+                    const flashcard = document.createElement('div');
+                    flashcard.className = 'flashcard';
+                    flashcard.onclick = () => flashcard.classList.toggle('flipped');
+                    flashcard.innerHTML = `
+                        <div class="term">${card.term}</div>
+                        <div class="definition">${card.definition}</div>
+                    `;
+                    container.appendChild(flashcard);
+                });
+            } else {
+                document.getElementById('resultsTitle').textContent = '❓ Practice Questions';
+                data.materials.forEach((q, index) => {
+                    const question = document.createElement('div');
+                    question.className = 'question';
+                    question.innerHTML = `
+                        <div class="q-text">Question ${index + 1}: ${q.question}</div>
+                        ${q.options.map((opt, i) => `
+                            <div class="option" onclick="selectAnswer(this, ${i}, ${q.correctIndex})">${opt}</div>
+                        `).join('')}
+                    `;
+                    container.appendChild(question);
+                });
+            }
+
+            document.getElementById('resultsDiv').classList.add('active');
+            document.getElementById('resultsDiv').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectAnswer(element, selectedIndex, correctIndex) {
+            const question = element.parentElement;
+            const options = question.querySelectorAll('.option');
+            
+            options.forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === correctIndex) {
+                    opt.classList.add('correct');
+                } else if (i === selectedIndex && i !== correctIndex) {
+                    opt.classList.add('incorrect');
+                }
+            });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('active');
+        }
+
+        function resetApp() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileName').textContent = '';
+            uploadedFile = null;
+            document.getElementById('resultsDiv').classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Drag and drop support
+        const fileUpload = document.querySelector('.file-upload');
+        
+        fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUpload.style.background = '#f8f9ff';
+        });
+
+        fileUpload.addEventListener('dragleave', () => {
+            fileUpload.style.background = '';
+        });
+
+        fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUpload.style.background = '';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') {
+                uploadedFile = file;
+                document.getElementById('fileName').textContent = `Selected: ${file.name}`;
+            }
+        });
+    </script>
+</body>
+</html>
