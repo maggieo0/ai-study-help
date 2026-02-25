@@ -462,7 +462,7 @@
                 
                 if (currentTab === 'text') {
                     // Send text directly
-                    response = await fetch(`${API_URL}/generate`, {
+                    response = await fetch(API_URL, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
